@@ -1,0 +1,34 @@
+% Student supplied function to compute the control input at each instant of time
+% Input parameters:
+%   t  -  Time (in seconds) since start of simulation
+%   x - state of the rocket, x=[y,z,th,psi,dy,dz,dth,dpsi,m]^T
+%   consts - structure that contains various system constants
+%   ctrl  -  any student defined control parameters
+% Output parameters:
+%   u  -  [thrust; torque] - two inputs to the rocket
+function u = student_controller_stable_theta(t, x, consts, ctrl)
+    
+    % Extract various states
+    y = x(1) ;
+    z = x(2) ;
+    th = x(3) ; 
+    psi = x(4) ;
+    
+    dy = x(5) ;
+    dz = x(6) ;
+    dth = x(7) ;
+    dpsi = x(8) ;
+    
+    m = x(9) ;
+    
+    K_theta = lqr([0,1;0,0],[0;1],10*eye(2),1);
+    v = -K_theta*[th;dth];
+    K_psi = lqr([0,1;0,0],[0,1/consts.JT],10*eye(2),1);
+    
+
+    x_d = [0;consts.L;0;0; 0;0;0;0;  m] ;
+    u_ff = [m*consts.g / consts.gamma ; 0] ;
+    
+    % Output control input [thrust; torque]
+    u = ctrl.K*(x - x_d) ;
+end

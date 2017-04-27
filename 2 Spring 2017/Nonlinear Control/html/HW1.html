@@ -1,0 +1,606 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>HW1</title><meta name="generator" content="MATLAB 9.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-01-29"><meta name="DC.source" content="HW1.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Problem 1</a></li><li><a href="#3">Problem 2</a></li><li><a href="#4">Problem 3</a></li><li><a href="#5">Problem 4</a></li><li><a href="#6">Problem 5</a></li><li><a href="#7">Problem 6</a></li></ul></div><pre class="codeinput">close <span class="string">all</span>
+clear
+clc
+
+x10 = 0.5;
+x20 = 0;
+x30 = 0;
+x40 = 0;
+t0 = 0;
+tf = 10;
+</pre><h2>Problem 1<a name="2"></a></h2><pre class="codeinput">load(<span class="string">'sym_model_inv_pend_cart.mat'</span>);
+syms <span class="string">u</span>;
+fi = 1;
+
+f = [dtheta;ds;(inv(D)*(-H+[0;u]))];
+x = [theta;s;dtheta;ds];
+Alin = jacobian(f,x);
+Blin = jacobian(f,u);
+theta = 0;
+s = 0;
+dtheta = 0;
+ds = 0;
+M = 25;
+m = 20;
+L = 9.81;
+g = 9.81;
+J = 1/3*m*L^2;
+Alin = vpa(subs(Alin),4)
+Blin = vpa(subs(Blin),4)
+</pre><pre class="codeoutput"> 
+Alin =
+ 
+[     0, 0, 1.0,   0]
+[     0, 0,   0, 1.0]
+[ 1.125, 0,   0,   0]
+[ 4.905, 0,   0,   0]
+ 
+ 
+Blin =
+ 
+        0
+        0
+ 0.002548
+  0.03333
+ 
+</pre><h2>Problem 2<a name="3"></a></h2><pre class="codeinput">A = [0,0,1,0;0,0,0,1;9/8,0,0,0;981/200,0,0,0];
+B = [0;0;5/1962;1/30];
+Pctrb = [B,A*B,A^2*B,A^3*B];
+ranklinsys = rank(Pctrb)
+
+P = [-3,-2,-0.7+0.2*i,-0.7-0.2*i];
+K1 = place(A,B,P)
+</pre><pre class="codeoutput">
+ranklinsys =
+
+     4
+
+
+K1 =
+
+   1.0e+03 *
+
+    7.4144   -0.1272    8.2927   -0.4420
+
+</pre><h2>Problem 3<a name="4"></a></h2><pre class="codeinput">syms <span class="string">theta</span> <span class="string">s</span> <span class="string">dtheta</span> <span class="string">ds</span>
+x = [theta;s;dtheta;ds];
+
+AminusBK = vpa(A - B*K1,4)
+
+fKx = [dtheta;ds;(inv(D)*(-H+[0;-K1*x]))];
+M = 25;
+m = 20;
+L = 9.81;
+g = 9.81;
+J = 1/3*m*L^2;
+fKx = subs(fKx);
+fkxlin = jacobian(fKx,x);
+
+theta = 0;
+s = 0;
+dtheta = 0;
+ds = 0;
+fkxlin = subs(fkxlin);
+linofnonlinsys = vpa(fkxlin,4)
+</pre><pre class="codeoutput"> 
+AminusBK =
+ 
+[      0,      0,    1.0,     0]
+[      0,      0,      0,   1.0]
+[ -17.77, 0.3242, -21.13, 1.126]
+[ -242.2,   4.24, -276.4, 14.73]
+ 
+ 
+linofnonlinsys =
+ 
+[      0,      0,    1.0,     0]
+[      0,      0,      0,   1.0]
+[ -17.77, 0.3242, -21.13, 1.126]
+[ -242.2,   4.24, -276.4, 14.73]
+ 
+</pre><h2>Problem 4<a name="5"></a></h2><pre class="codeinput">clear <span class="string">t</span> <span class="string">x</span> <span class="string">fKx</span> <span class="string">tlin</span> <span class="string">xlin</span> <span class="string">tnl</span> <span class="string">xnl</span> <span class="string">Flin</span> <span class="string">Fnl</span>
+x10 = 0.7;
+x20 = 0;
+x30 = 0;
+x40 = 0;
+t0 = 0;
+tf = 3.2;
+
+linsyseval = @(t,x)[(A-B*K1)*x];
+
+[tlin,xlin] = ode45(linsyseval, [t0 tf], [x10,x20,x30,x40]);
+figure(1)
+subplot(4,1,1)
+plot(tlin,xlin(:,1),<span class="string">'-'</span>,tlin,xlin(:,2),<span class="string">'--'</span>)
+legend(<span class="string">'theta'</span>, <span class="string">'s'</span>,<span class="string">'location'</span>, <span class="string">'southeast'</span>)
+title(<span class="string">'Problem 4. Linearized System Response, State Feedback'</span>)
+xlabel(<span class="string">'Time [s]'</span>)
+ylabel(<span class="string">'States'</span>)
+hold <span class="string">on</span>
+
+<span class="keyword">for</span> i  = 1:length(xlin)
+    Flin(i) = -K1*xlin(i,:)';
+<span class="keyword">end</span>
+
+subplot(4,1,2)
+plot(tlin,Flin)
+xlabel(<span class="string">'Time [s]'</span>)
+ylabel(<span class="string">'Force [N]'</span>)
+title(<span class="string">'Problem 4. Input to Linearized System, State Feedback'</span>)
+hold <span class="string">on</span>
+
+[tnl,xnl] = ode45(@nonlinsyseval, [t0 tf], [x10,x20,x30,x40],[],D,H,K1);
+
+<span class="keyword">for</span> i  = 1:length(xnl)
+    Fnl(i) = -K1*xnl(i,:)';
+<span class="keyword">end</span>
+
+subplot(4,1,3)
+plot(tnl,xnl(:,1),<span class="string">'-'</span>,tnl,xnl(:,2),<span class="string">'--'</span>)
+legend(<span class="string">'theta'</span>, <span class="string">'s'</span>,<span class="string">'location'</span>, <span class="string">'southeast'</span>)
+title(<span class="string">'Problem 4. Nonlinear System Response, State Feedback'</span>)
+xlabel(<span class="string">'Time [s]'</span>)
+ylabel(<span class="string">'States'</span>)
+hold <span class="string">on</span>
+
+subplot(4,1,4)
+plot(tnl,Fnl)
+xlabel(<span class="string">'Time [s]'</span>)
+ylabel(<span class="string">'Force [N]'</span>)
+title(<span class="string">'Problem 4. Input to Nonlinear system, State Feedback'</span>)
+hold <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="HW1_01.png" style="width:560px;height:420px;" alt=""> <h2>Problem 5<a name="6"></a></h2><pre class="codeinput">clear <span class="string">t</span> <span class="string">x</span> <span class="string">fKx</span> <span class="string">tlin</span> <span class="string">xlin</span> <span class="string">tnl</span> <span class="string">xnl</span> <span class="string">Flin</span> <span class="string">Fnl</span>
+<span class="comment">% x10 = 0;</span>
+<span class="comment">% x20 = 0;</span>
+<span class="comment">% x30 = 0;</span>
+<span class="comment">% x40 = 0.5;</span>
+<span class="comment">% t0 = 0;</span>
+<span class="comment">% tf = 10;</span>
+<span class="comment">%</span>
+<span class="comment">% w1 = 10;</span>
+<span class="comment">% w2 = 10;</span>
+<span class="comment">% w3 = 1;</span>
+<span class="comment">% w4 = 1;</span>
+<span class="comment">% Q = [w1,0,0,0;0,w2,0,0;0,0,w3,0;0,0,0,w4]</span>
+<span class="comment">% R = .0001</span>
+<span class="comment">% [K2,S,E] = lqr(A,B,Q,R);</span>
+<span class="comment">%</span>
+<span class="comment">% [vlin,dlin] = eig(A-K2*B)</span>
+<span class="comment">%</span>
+<span class="comment">% linsyseval = @(t,x)[(A-B*K2)*x];</span>
+<span class="comment">% [tlin,xlin] = ode45(linsyseval, [t0 tf], [x10,x20,x30,x40]);</span>
+<span class="comment">% figure(2)</span>
+<span class="comment">% subplot(4,1,1)</span>
+<span class="comment">% plot(tlin,xlin(:,1),'-',tlin,xlin(:,2),'--')</span>
+<span class="comment">% legend('theta', 's','location', 'southeast')</span>
+<span class="comment">% title('Problem 5. Linearized System Response, LQR')</span>
+<span class="comment">% xlabel('Time [s]')</span>
+<span class="comment">% ylabel('States')</span>
+<span class="comment">% hold on</span>
+<span class="comment">%</span>
+<span class="comment">% for i  = 1:length(xlin)</span>
+<span class="comment">%     Flin(i) = -K2*xlin(i,:)';</span>
+<span class="comment">% end</span>
+<span class="comment">%</span>
+<span class="comment">% subplot(4,1,2)</span>
+<span class="comment">% plot(tlin,Flin)</span>
+<span class="comment">% xlabel('Time [s]')</span>
+<span class="comment">% ylabel('Force [N]')</span>
+<span class="comment">% title('Problem 5. Input to Linearized System, LQR')</span>
+<span class="comment">% hold on</span>
+<span class="comment">%</span>
+<span class="comment">% clear tnl F</span>
+<span class="comment">% [tnl,xnl] = ode45(@nonlinsyseval, [t0 tf], [x10,x20,x30,x40],[],D,H,K2);</span>
+<span class="comment">%</span>
+<span class="comment">% for i  = 1:length(xnl)</span>
+<span class="comment">%     Fnl(i) = -K2*xnl(i,:)';</span>
+<span class="comment">% end</span>
+<span class="comment">%</span>
+<span class="comment">% subplot(4,1,3)</span>
+<span class="comment">% plot(tnl,xnl(:,1),'-',tnl,xnl(:,2),'--')</span>
+<span class="comment">% legend('theta', 's','location', 'southeast')</span>
+<span class="comment">% title('Problem 5. Nonlinear System Response, LQR')</span>
+<span class="comment">% xlabel('Time [s]')</span>
+<span class="comment">% ylabel('States')</span>
+<span class="comment">% hold on</span>
+<span class="comment">%</span>
+<span class="comment">% subplot(4,1,4)</span>
+<span class="comment">% plot(tnl,Fnl)</span>
+<span class="comment">% xlabel('Time [s]')</span>
+<span class="comment">% ylabel('Force [N]')</span>
+<span class="comment">% title('Problem 5. Input to Nonlinear system, LQR')</span>
+<span class="comment">% hold on</span>
+</pre><h2>Problem 6<a name="7"></a></h2><pre class="codeinput">x10 = 1.1;
+x20 = 0;
+x30 = 0;
+x40 = 0;
+t0 = 0;
+tf = 30;
+
+w1 = 10;
+w2 = 10;
+w3 = 1;
+w4 = 1;
+Q = [w1,0,0,0;0,w2,0,0;0,0,w3,0;0,0,0,w4]
+R = 10
+[K3,S,E] = lqr(A,B,Q,R);
+
+[vlin,dlin] = eig(A-K3*B)
+
+linsyseval = @(t,x)[(A-B*K3)*x];
+[tlin,xlin] = ode45(linsyseval, [t0 tf], [x10,x20,x30,x40]);
+figure(2)
+subplot(4,1,1)
+plot(tlin,xlin)
+legend(<span class="string">'theta'</span>, <span class="string">'s'</span>, <span class="string">'dtheta'</span>, <span class="string">'ds'</span>, <span class="string">'location'</span>, <span class="string">'southeast'</span>)
+title(<span class="string">'Problem 6. Linearized System Response, LQR'</span>)
+xlabel(<span class="string">'Time [s]'</span>)
+ylabel(<span class="string">'States'</span>)
+
+<span class="keyword">for</span> i  = 1:length(xlin)
+    Flin(i) = -K3*xlin(i,:)';
+<span class="keyword">end</span>
+
+subplot(4,1,2)
+plot(tlin,Flin)
+xlabel(<span class="string">'Time [s]'</span>)
+ylabel(<span class="string">'Force [N]'</span>)
+title(<span class="string">'Problem 6. Input to Linearized System, LQR'</span>)
+
+clear <span class="string">tnl</span> <span class="string">F</span>
+[tnl,xnl] = ode45(@nonlinsyseval, [t0 tf], [x10,x20,x30,x40],[],D,H,K3);
+
+<span class="keyword">for</span> i  = 1:length(xnl)
+    Fnl(i) = -K3*xnl(i,:)';
+<span class="keyword">end</span>
+
+subplot(4,1,3)
+plot(tnl,xnl)
+legend(<span class="string">'theta'</span>, <span class="string">'s'</span>, <span class="string">'dtheta'</span>, <span class="string">'ds'</span>, <span class="string">'location'</span>, <span class="string">'southeast'</span>)
+title(<span class="string">'Problem 6. Nonlinear System Response, LQR'</span>)
+xlabel(<span class="string">'Time [s]'</span>)
+ylabel(<span class="string">'States'</span>)
+
+subplot(4,1,4)
+plot(tnl,Fnl)
+xlabel(<span class="string">'Time [s]'</span>)
+ylabel(<span class="string">'Force [N]'</span>)
+title(<span class="string">'Problem 6. Input to Nonlinear system, LQR'</span>)
+</pre><pre class="codeoutput">
+Q =
+
+    10     0     0     0
+     0    10     0     0
+     0     0     1     0
+     0     0     0     1
+
+
+R =
+
+    10
+
+
+vlin =
+
+  -0.5490 + 0.0000i   0.1592 + 0.0000i  -0.0464 + 0.2122i  -0.0464 - 0.2122i
+  -0.5889 + 0.0000i   0.6866 + 0.0000i  -0.5704 - 0.2761i  -0.5704 + 0.2761i
+  -0.5379 + 0.0000i  -0.1334 + 0.0000i  -0.0262 + 0.2286i  -0.0262 - 0.2286i
+  -0.2499 + 0.0000i  -0.6967 + 0.0000i   0.7058 + 0.0000i   0.7058 + 0.0000i
+
+
+dlin =
+
+  -7.2045 + 0.0000i   0.0000 + 0.0000i   0.0000 + 0.0000i   0.0000 + 0.0000i
+   0.0000 + 0.0000i  -1.0680 + 0.0000i   0.0000 + 0.0000i   0.0000 + 0.0000i
+   0.0000 + 0.0000i   0.0000 + 0.0000i  -0.5300 + 0.9302i   0.0000 + 0.0000i
+   0.0000 + 0.0000i   0.0000 + 0.0000i   0.0000 + 0.0000i  -0.5300 - 0.9302i
+
+</pre><img vspace="5" hspace="5" src="HW1_02.png" style="width:560px;height:420px;" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+close all
+clear
+clc
+
+x10 = 0.5;
+x20 = 0;
+x30 = 0;
+x40 = 0;
+t0 = 0;
+tf = 10;
+
+%% Problem 1
+
+load('sym_model_inv_pend_cart.mat');
+syms u;
+fi = 1;
+
+f = [dtheta;ds;(inv(D)*(-H+[0;u]))];
+x = [theta;s;dtheta;ds];
+Alin = jacobian(f,x);
+Blin = jacobian(f,u);
+theta = 0;
+s = 0;
+dtheta = 0;
+ds = 0;
+M = 25;
+m = 20;
+L = 9.81;
+g = 9.81;
+J = 1/3*m*L^2;
+Alin = vpa(subs(Alin),4)
+Blin = vpa(subs(Blin),4)
+%% Problem 2
+
+A = [0,0,1,0;0,0,0,1;9/8,0,0,0;981/200,0,0,0];
+B = [0;0;5/1962;1/30];
+Pctrb = [B,A*B,A^2*B,A^3*B];
+ranklinsys = rank(Pctrb)
+
+P = [-3,-2,-0.7+0.2*i,-0.7-0.2*i];
+K1 = place(A,B,P)
+
+%% Problem 3
+syms theta s dtheta ds
+x = [theta;s;dtheta;ds];
+
+AminusBK = vpa(A - B*K1,4)
+
+fKx = [dtheta;ds;(inv(D)*(-H+[0;-K1*x]))];
+M = 25;
+m = 20;
+L = 9.81;
+g = 9.81;
+J = 1/3*m*L^2;
+fKx = subs(fKx);
+fkxlin = jacobian(fKx,x);
+
+theta = 0;
+s = 0;
+dtheta = 0;
+ds = 0;
+fkxlin = subs(fkxlin);
+linofnonlinsys = vpa(fkxlin,4)
+
+%% Problem 4
+clear t x fKx tlin xlin tnl xnl Flin Fnl
+x10 = 0.7;
+x20 = 0;
+x30 = 0;
+x40 = 0;
+t0 = 0;
+tf = 3.2;
+
+linsyseval = @(t,x)[(A-B*K1)*x];
+
+[tlin,xlin] = ode45(linsyseval, [t0 tf], [x10,x20,x30,x40]);
+figure(1)
+subplot(4,1,1)
+plot(tlin,xlin(:,1),'-',tlin,xlin(:,2),'REPLACE_WITH_DASH_DASH')
+legend('theta', 's','location', 'southeast')
+title('Problem 4. Linearized System Response, State Feedback')
+xlabel('Time [s]')
+ylabel('States')
+hold on
+
+for i  = 1:length(xlin)
+    Flin(i) = -K1*xlin(i,:)';
+end
+
+subplot(4,1,2)
+plot(tlin,Flin)
+xlabel('Time [s]')
+ylabel('Force [N]')
+title('Problem 4. Input to Linearized System, State Feedback')
+hold on
+
+[tnl,xnl] = ode45(@nonlinsyseval, [t0 tf], [x10,x20,x30,x40],[],D,H,K1);
+
+for i  = 1:length(xnl)
+    Fnl(i) = -K1*xnl(i,:)';
+end
+
+subplot(4,1,3)
+plot(tnl,xnl(:,1),'-',tnl,xnl(:,2),'REPLACE_WITH_DASH_DASH')
+legend('theta', 's','location', 'southeast')
+title('Problem 4. Nonlinear System Response, State Feedback')
+xlabel('Time [s]')
+ylabel('States')
+hold on
+
+subplot(4,1,4)
+plot(tnl,Fnl)
+xlabel('Time [s]')
+ylabel('Force [N]')
+title('Problem 4. Input to Nonlinear system, State Feedback')
+hold on
+
+%% Problem 5
+clear t x fKx tlin xlin tnl xnl Flin Fnl
+% x10 = 0;
+% x20 = 0;
+% x30 = 0;
+% x40 = 0.5;
+% t0 = 0;
+% tf = 10;
+% 
+% w1 = 10;
+% w2 = 10;
+% w3 = 1;
+% w4 = 1;
+% Q = [w1,0,0,0;0,w2,0,0;0,0,w3,0;0,0,0,w4]
+% R = .0001
+% [K2,S,E] = lqr(A,B,Q,R);
+% 
+% [vlin,dlin] = eig(A-K2*B)
+% 
+% linsyseval = @(t,x)[(A-B*K2)*x];
+% [tlin,xlin] = ode45(linsyseval, [t0 tf], [x10,x20,x30,x40]);
+% figure(2)
+% subplot(4,1,1)
+% plot(tlin,xlin(:,1),'-',tlin,xlin(:,2),'REPLACE_WITH_DASH_DASH')
+% legend('theta', 's','location', 'southeast')
+% title('Problem 5. Linearized System Response, LQR')
+% xlabel('Time [s]')
+% ylabel('States')
+% hold on
+% 
+% for i  = 1:length(xlin)
+%     Flin(i) = -K2*xlin(i,:)';
+% end
+% 
+% subplot(4,1,2)
+% plot(tlin,Flin)
+% xlabel('Time [s]')
+% ylabel('Force [N]')
+% title('Problem 5. Input to Linearized System, LQR')
+% hold on
+% 
+% clear tnl F
+% [tnl,xnl] = ode45(@nonlinsyseval, [t0 tf], [x10,x20,x30,x40],[],D,H,K2);
+% 
+% for i  = 1:length(xnl)
+%     Fnl(i) = -K2*xnl(i,:)';
+% end
+% 
+% subplot(4,1,3)
+% plot(tnl,xnl(:,1),'-',tnl,xnl(:,2),'REPLACE_WITH_DASH_DASH')
+% legend('theta', 's','location', 'southeast')
+% title('Problem 5. Nonlinear System Response, LQR')
+% xlabel('Time [s]')
+% ylabel('States')
+% hold on
+% 
+% subplot(4,1,4)
+% plot(tnl,Fnl)
+% xlabel('Time [s]')
+% ylabel('Force [N]')
+% title('Problem 5. Input to Nonlinear system, LQR')
+% hold on
+%% Problem 6
+x10 = 1.1;
+x20 = 0;
+x30 = 0;
+x40 = 0;
+t0 = 0;
+tf = 30;
+
+w1 = 10;
+w2 = 10;
+w3 = 1;
+w4 = 1;
+Q = [w1,0,0,0;0,w2,0,0;0,0,w3,0;0,0,0,w4]
+R = 10
+[K3,S,E] = lqr(A,B,Q,R);
+
+[vlin,dlin] = eig(A-K3*B)
+
+linsyseval = @(t,x)[(A-B*K3)*x];
+[tlin,xlin] = ode45(linsyseval, [t0 tf], [x10,x20,x30,x40]);
+figure(2)
+subplot(4,1,1)
+plot(tlin,xlin)
+legend('theta', 's', 'dtheta', 'ds', 'location', 'southeast')
+title('Problem 6. Linearized System Response, LQR')
+xlabel('Time [s]')
+ylabel('States')
+
+for i  = 1:length(xlin)
+    Flin(i) = -K3*xlin(i,:)';
+end
+
+subplot(4,1,2)
+plot(tlin,Flin)
+xlabel('Time [s]')
+ylabel('Force [N]')
+title('Problem 6. Input to Linearized System, LQR')
+
+clear tnl F
+[tnl,xnl] = ode45(@nonlinsyseval, [t0 tf], [x10,x20,x30,x40],[],D,H,K3);
+
+for i  = 1:length(xnl)
+    Fnl(i) = -K3*xnl(i,:)';
+end
+
+subplot(4,1,3)
+plot(tnl,xnl)
+legend('theta', 's', 'dtheta', 'ds', 'location', 'southeast')
+title('Problem 6. Nonlinear System Response, LQR')
+xlabel('Time [s]')
+ylabel('States')
+
+subplot(4,1,4)
+plot(tnl,Fnl)
+xlabel('Time [s]')
+ylabel('Force [N]')
+title('Problem 6. Input to Nonlinear system, LQR')
+
+##### SOURCE END #####
+--></body></html>
